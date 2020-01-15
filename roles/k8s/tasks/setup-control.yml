@@ -1,0 +1,38 @@
+---
+  - name: Initialize k8s
+    shell: |
+      kubeadm init --pod-network-cidr=10.244.0.0/16
+    become: true
+  - name: Create a directory if it does not exist
+    file:
+      path: ~/.kube/config
+      state: directory
+      mode: '0755'
+  - name: Copy admin config to local
+    copy:
+      src: /etc/kubernetes/admin.conf
+      dest: "/home/{{ansible_user}}/.kube/config/admin.conf"
+      owner: turnrye
+      group: turnrye
+      mode: '0755'
+      remote_src: true
+    become: true
+  - name: Add kubeconfig var to profile
+    lineinfile:
+      path: ~/.profile
+      insertbefore: BOF
+      line: 'export KUBECONFIG=$HOME/.kube/config/admin.conf'
+  - name: Specifying a destination path
+    fetch:
+      src:  ~/.kube/config/admin.conf
+      dest: ~/admin.conf
+      flat: yes
+  - name: Setup flannel
+    shell: ./.profile; kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+  - name: Generate join command
+    shell: ./.profile; kubeadm token create --print-join-command
+    register: kube_join_out
+  - name: Set kube join var
+    set_fact:
+      k8s_join_command: "{{ kube_join_out.stdout_lines[0] }}"
+    run_once: true

@@ -1,0 +1,14 @@
+---
+  - name: Download helm installer
+    get_url: 
+      url: https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+      dest: ~/helm.sh
+      mode: 0777
+  - name: Execute the ~/helm.sh
+    shell: ~/helm.sh
+  - name: Remove the ~/helm.sh
+    file: path=~/helm.sh state=absent
+  - name: Add the helm "stable" repo
+    shell: . ~/.bashrc && helm repo add stable https://kubernetes-charts.storage.googleapis.com
+  - name: Update helm repos
+    shell: . ~/.bashrc && helm repo update

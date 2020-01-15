@@ -1,0 +1,3 @@
+---
+  - name: Join command
+    shell: "{{ k8s_join_command }}"

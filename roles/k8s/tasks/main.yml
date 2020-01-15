@@ -1,0 +1,16 @@
+---
+  - { include: install-docker.yml, become: yes }
+  - { include: install-k8s.yml, become: yes }
+  - include: setup-helm.yml
+  - name: Reset k8s
+    shell: |
+      kubeadm reset -f
+    become: yes
+  - include: setup-control.yml
+    when: is_control|default(false)
+  - include: join.yml
+    when: not is_control|default(false)
+    become: yes
+  - include: install-platform-services.yml
+    when: is_control|default(false)
+    run_once: true

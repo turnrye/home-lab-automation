@@ -1,0 +1,5 @@
+---
+  - name: Setup metallb
+    shell: ./.profile; kubectl apply -f https://raw.githubusercontent.com/google/metallb/v0.8.3/manifests/metallb.yaml
+  - name: Setup NFS client provisioner
+    shell: . ~/.bashrc && helm upgrade --install nfs stable/nfs-client-provisioner --set nfs.server={{ nfs_server_host }} --set nfs.path=/mnt/media/k8s --set storageClass.defaultClass=true

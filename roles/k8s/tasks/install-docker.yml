@@ -1,0 +1,45 @@
+---
+  - name: Add Docker's apt key
+    apt_key:
+      url: https://download.docker.com/linux/ubuntu/gpg
+      state: present
+  - name: Add Google's kubernetes repository for apt
+    apt_repository:
+      repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable
+      state: present
+      filename: docker
+  - name: Install dependencies
+    apt:
+      update_cache: yes
+      pkg:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - software-properties-common
+        - containerd.io=1.2.10-3
+        - docker-ce=5:19.03.4~3-0~ubuntu-bionic
+        - docker-ce-cli=5:19.03.4~3-0~ubuntu-bionic
+    register: apt_installed
+  - template:
+      src: docker.j2
+      dest: /etc/docker/daemon.json
+    register: docker_daemon
+  - name: Adding user {{ ansible_user_id }} to docker group
+    user: name={{ ansible_user_id }}
+          groups=docker
+          append=yes
+    register: user_add
+  - name: "Ansible Create directory if not exists"
+    file:
+      path: /etc/systemd/system/docker.service.d
+      state: directory
+      mode: 0755
+      group: root
+      owner: root
+    register: ansible_directory
+  - name: Restart docker
+    systemd:
+      state: restarted
+      daemon_reload: yes
+      name: docker
+    when: apt_installed.changed or docker_daemon.changed or user_add.changed or ansible_directory.changed

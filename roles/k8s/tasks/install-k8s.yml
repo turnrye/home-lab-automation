@@ -1,0 +1,42 @@
+---
+  - name: Add Google's apt key
+    apt_key:
+      url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+      state: present
+  - name: Add Google's kubernetes repository for apt
+    apt_repository:
+      repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+      state: present
+      filename: kubernetes
+  - name: Install dependencies
+    apt:
+      update_cache: yes
+      pkg:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - software-properties-common
+        - nfs-common
+        - kubelet
+        - kubeadm
+        - kubernetes-cni
+  - name: hold the kubernetes packages back
+    dpkg_selections:
+      name: "{{ item }}"
+      selection: hold
+    with_items:
+      - kubelet
+      - kubeadm
+      - kubernetes-cni
+  - name: Adding user {{ ansible_user_id }} to docker group
+    user: name={{ ansible_user_id }}
+          groups=docker
+          append=yes
+  - name: Disable SWAP since kubernetes can't work with swap enabled (1/2)
+    shell: |
+      swapoff -a
+  - name: Disable SWAP in fstab since kubernetes can't work with swap enabled (2/2)
+    replace:
+      path: /etc/fstab
+      regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
+      replace: '# \1'

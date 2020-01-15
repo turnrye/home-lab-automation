@@ -1,0 +1,12 @@
+---
+  - name: Create temporary file for weave passwd k8s secret
+    tempfile:
+      state: file
+      suffix: temp
+    register: tempfile_1
+  - template:
+      src: weave-passwd.yaml.j2
+      dest: "{{ tempfile_1.path }}"
+  - name: Setup weave password
+    shell: |
+      . ./.profile; kubectl apply -f "{{ tempfile_1.path }}"

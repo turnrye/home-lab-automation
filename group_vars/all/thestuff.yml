@@ -1,0 +1,4 @@
+---
+  ansible_become_pass: '{{ cluster_sudo_pass }}'
+  ansible_user: turnrye
+  nfs_server_host: 10.0.80.251
