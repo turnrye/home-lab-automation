@@ -3,3 +3,45 @@
     shell: ./.profile; kubectl apply -f https://raw.githubusercontent.com/google/metallb/v0.8.3/manifests/metallb.yaml
   - name: Setup NFS client provisioner
     shell: . ~/.bashrc && helm upgrade --install nfs stable/nfs-client-provisioner --set nfs.server={{ nfs_server_host }} --set nfs.path=/mnt/media/k8s --set storageClass.defaultClass=true
+  - name: Create temporary file for metallb
+    tempfile:
+      state: file
+      suffix: temp
+    register: tempfile_1
+  - template:
+      src: metallb.j2
+      dest: "{{ tempfile_1.path }}"
+  - name: Setup metallb
+    shell: |
+      . ./.profile; kubectl apply -f "{{ tempfile_1.path }}"
+  - name: Setup nginx ingress
+    shell: |
+      . ./.profile; helm install nginx stable/nginx-ingress
+  - name: Setup dashboard config
+    shell: |
+      . ./.profile; kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-beta8/aio/deploy/recommended.yaml
+  - name: Create temporary file for dashboard ingress
+    tempfile:
+      state: file
+      suffix: temp
+    register: tempfile_2
+  - template:
+      src: ingress.j2
+      dest: "{{ tempfile_2.path }}"
+  - name: Setup dashboard ingress
+    shell: |
+      . ./.profile; kubectl apply -f "{{ tempfile_2.path }}"
+  - name: Setup dashboard config
+    shell: |
+      . ./.profile; kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-beta8/aio/deploy/recommended.yaml
+  - name: Create temporary file for dashboard API user
+    tempfile:
+      state: file
+      suffix: temp
+    register: tempfile_3
+  - template:
+      src: dashboard.j2
+      dest: "{{ tempfile_3.path }}"
+  - name: Setup dashboard ingress
+    shell: |
+      . ./.profile; kubectl apply -f "{{ tempfile_3.path }}"
