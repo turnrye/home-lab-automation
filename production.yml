@@ -4,3 +4,6 @@
       10.0.80.243:
         is_control: True
       10.0.80.236:
+  control:
+    hosts:
+      10.0.80.243
