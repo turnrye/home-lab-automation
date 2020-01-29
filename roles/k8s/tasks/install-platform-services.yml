@@ -17,31 +17,26 @@
   - name: Setup nginx ingress
     shell: |
       . ./.profile; helm install nginx stable/nginx-ingress
-  - name: Setup dashboard config
+  - name: Setup jetstack
     shell: |
-      . ./.profile; kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-beta8/aio/deploy/recommended.yaml
-  - name: Create temporary file for dashboard ingress
+      . ./.profile; kubectl apply --validate=false -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.13/deploy/manifests/00-crds.yaml
+  - name: Setup jetstack repo
+    shell: |
+      . ./.profile; helm repo add jetstack https://charts.jetstack.io
+  - name: Setup jetstack
+    shell: |
+      . ./.profile; helm install cert-manager jetstack/cert-manager --set=ingressShim.defaultIssuerKind=ClusterIssuer --set=ingressShim.defaultIssuerName=letsencrypt-prod
+
+  - name: Create temporary file for acme-issuer
     tempfile:
       state: file
       suffix: temp
     register: tempfile_2
   - template:
-      src: ingress.j2
+      src: acme-issuer.j2
       dest: "{{ tempfile_2.path }}"
-  - name: Setup dashboard ingress
-    shell: |
-      . ./.profile; kubectl apply -f "{{ tempfile_2.path }}"
-  - name: Setup dashboard config
-    shell: |
-      . ./.profile; kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-beta8/aio/deploy/recommended.yaml
-  - name: Create temporary file for dashboard API user
-    tempfile:
-      state: file
-      suffix: temp
-    register: tempfile_3
-  - template:
-      src: dashboard.j2
-      dest: "{{ tempfile_3.path }}"
-  - name: Setup dashboard ingress
-    shell: |
-      . ./.profile; kubectl apply -f "{{ tempfile_3.path }}"
+  # - name: Setup acme-issuer
+  #   shell: |
+  #     . ./.profile; kubectl apply -f "{{ tempfile_2.path }}"
+  # This is failing with:
+  # Internal error occurred: failed calling webhook \"webhook.cert-manager.io\": Post https://cert-manager-webhook.default.svc:443/mutate?timeout=30s: dial tcp 10.107.6.110:443: connect: connection refused

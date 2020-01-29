@@ -10,9 +10,6 @@
   - name: Setup pv
     shell: |
       . ./.profile; kubectl apply -f "{{ tempfile_1.path }}"
-  - name: Setup home assistant
-    shell: |
-      . ./.profile; helm upgrade --install home-assistant stable/home-assistant --set persistence.existingClaim=home-assistant-pvc
   - name: Create temporary file for metallb
     tempfile:
       state: file
@@ -21,6 +18,6 @@
   - template:
       src: lb.j2
       dest: "{{ tempfile_2.path }}"
-  - name: Setup metallb
+  - name: Setup home assistant
     shell: |
-      . ./.profile; kubectl apply -f "{{ tempfile_2.path }}"
+      . ./.profile; helm upgrade --install home-assistant stable/home-assistant -f "{{ tempfile_2.path }}"

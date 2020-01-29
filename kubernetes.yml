@@ -1,8 +1,13 @@
 ---
-# - hosts: k8s
-#   roles:
-#     - k8s
-  - hosts: control
-    roles:
-      - home-assistant
-      - plex
+- hosts: k8s
+  roles:
+    - k8s
+- hosts: control
+  roles:
+    - home-assistant
+    - plex
+    - prometheus
+    # - funkwhale
+    # - nextcloud
+    - k8s-dashboard
+    # - postgres
