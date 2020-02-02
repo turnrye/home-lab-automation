@@ -30,7 +30,7 @@ spec:
   apiVersion: v1
   kind: PersistentVolume
   metadata:
-    name: plex-config-pv
+    name: plex-config-2-pv
   spec:
     capacity:
       storage: 20Gi
@@ -43,13 +43,13 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: plex-config-pvc
+  name: plex-config-2-pvc
 spec:
   # It's necessary to specify "" as the storageClassName
   # so that the default storage class won't be used, see
   # https://kubernetes.io/docs/concepts/storage/persistent-volumes/#class-1
   storageClassName: ""
-  volumeName: plex-config-pv
+  volumeName: plex-config-2-pv
   accessModes:
     - ReadWriteOnce
   resources:

@@ -1,13 +1,16 @@
 ---
-- hosts: k8s
-  roles:
-    - k8s
+# - hosts: k8s
+#   roles:
+#     - k8s
 - hosts: control
   roles:
-    - home-assistant
-    - plex
-    - prometheus
-    # - funkwhale
-    # - nextcloud
-    - k8s-dashboard
-    # - postgres
+    # - home-assistant
+    # - plex
+    # - k8s-dashboard
+    # - nzbget
+    # - sonarr
+    - mariadb
+    - nextcloud
+
+    # - funkwhale # This is broken
+    # - prometheus # This is broken
