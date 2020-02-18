@@ -1,0 +1,18 @@
+---  
+  - name: Create temporary file for pv
+    tempfile:
+      state: file
+      suffix: temp
+    register: tempfile_1
+  - template:
+      src: helm-config.yaml.j2
+      dest: "{{ tempfile_1.path }}"
+  - name: Setup kube-dashboard
+    shell: ". ./.profile; kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-beta8/aio/deploy/recommended.yaml"
+  - name: Setup kube-dashboard
+    shell: ". ./.profile; kubectl apply -f {{ tempfile_1.path }}"
+  - name: Get secret for dashboard
+    shell: ". ./.profile; kubectl -n kubernetes-dashboard describe secret $(kubectl -n kubernetes-dashboard get secret | grep admin-user | awk '{print $1}')"
+    register: hello
+  - debug: msg="{{ hello.stdout }}"
+  - local_action: copy content={{ hello.stdout }} dest=~/dashboard-token.txt

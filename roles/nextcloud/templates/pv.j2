@@ -1,90 +1,86 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: plex-pv
+  name: nextcloud-pv
 spec:
   capacity:
-    storage: 20Ti
+    storage: 1Ti
   accessModes:
     - ReadWriteOnce
   nfs:
     server: {{ nfs_server_host }}
-    path: /mnt/beta/k8s/plex
+    path: /mnt/beta/k8s/nextcloud
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: plex-pvc
+  name: nextcloud-pvc
 spec:
   # It's necessary to specify "" as the storageClassName
   # so that the default storage class won't be used, see
   # https://kubernetes.io/docs/concepts/storage/persistent-volumes/#class-1
   storageClassName: ""
-  volumeName: plex-pv
+  volumeName: nextcloud-pv
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 20Ti
+      storage: 1Ti
 ---
-  apiVersion: v1
-  kind: PersistentVolume
-  metadata:
-    name: plex-config-4-pv
-  spec:
-    capacity:
-      storage: 20Gi
-    accessModes:
-      - ReadWriteOnce
-    iscsi:
-      targetPortal: 10.0.80.251:3260
-      portals: ['10.0.80.251:3260']
-      iqn: iqn.2005-10.org.freenas.ctl:iscsi-plex
-      lun: 0
-      fsType: ext4
-      readOnly: true
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nextcloud-db-master-pv
+spec:
+  capacity:
+    storage: 1Ti
+  accessModes:
+    - ReadWriteOnce
+  nfs:
+    server: {{ nfs_server_host }}
+    path: /mnt/beta/k8s/nextcloud-db-master
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: plex-config-4-pvc
+  name: nextcloud-db-master-pvc
 spec:
   # It's necessary to specify "" as the storageClassName
   # so that the default storage class won't be used, see
   # https://kubernetes.io/docs/concepts/storage/persistent-volumes/#class-1
   storageClassName: ""
-  volumeName: plex-config-4-pv
+  volumeName: nextcloud-db-master-pv
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 20Gi
+      storage: 1Ti
 ---
-  apiVersion: v1
-  kind: PersistentVolume
-  metadata:
-    name: plex-transcode-pv
-  spec:
-    capacity:
-      storage: 500Gi
-    accessModes:
-      - ReadWriteOnce
-    nfs:
-      server: {{ nfs_server_host }}
-      path: /mnt/beta/k8s/plex-transcode
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nextcloud-db-slave-pv
+spec:
+  capacity:
+    storage: 1Ti
+  accessModes:
+    - ReadWriteOnce
+  nfs:
+    server: {{ nfs_server_host }}
+    path: /mnt/beta/k8s/nextcloud-db-slave
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: plex-transcode-pvc
+  name: nextcloud-db-slave-pvc
 spec:
   # It's necessary to specify "" as the storageClassName
   # so that the default storage class won't be used, see
   # https://kubernetes.io/docs/concepts/storage/persistent-volumes/#class-1
   storageClassName: ""
-  volumeName: plex-transcode-pv
+  volumeName: nextcloud-db-slave-pv
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 500Gi
+      storage: 1Ti

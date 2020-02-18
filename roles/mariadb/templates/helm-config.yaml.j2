@@ -1,0 +1,17 @@
+master:
+  persistence:
+    existingClaim: mariadb-master-pvc
+slave:
+  persistence:
+    existingClaim: mariadb-slave-pvc
+securityContext:
+  fsGroup: 0
+  runAsUser: 0
+metrics:
+  enabled: true
+db:
+  name: nextcloud
+  user: nextcloud
+  password: {{ nextcloud_db_pw }}
+rootUser:
+  password: {{ mariadb_root_pw }}

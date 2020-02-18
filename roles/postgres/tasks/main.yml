@@ -1,0 +1,3 @@
+---
+  - include: setup-postgres.yml
+    run_once: true

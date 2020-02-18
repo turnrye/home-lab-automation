@@ -1,0 +1,15 @@
+---  
+  - name: Create temporary file for pv
+    tempfile:
+      state: file
+      suffix: temp
+    register: tempfile_2
+  - template:
+      src: helm-config.yaml.j2
+      dest: "{{ tempfile_2.path }}"
+  - name: Add the incubator
+    shell: ". ./.profile; helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com"
+  - name: Update
+    shell: ". ./.profile; helm repo update"
+  - name: Setup kube-plex
+    shell: ". ./.profile; helm upgrade --install postgres incubator/patroni -f {{ tempfile_2.path }}"

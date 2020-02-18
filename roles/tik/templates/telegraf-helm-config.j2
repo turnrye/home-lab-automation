@@ -1,0 +1,9 @@
+persistence:
+  enabled: true
+  existingClaim: influxdb-pvc
+adminUser:
+  pwd: {{ influxdb_admin_pw }}
+user:
+  pwd: {{ influxdb_user_pw }}
+readUser:
+  pwd: {{ influxdb_read_user_pw }}

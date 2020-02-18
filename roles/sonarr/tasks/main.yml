@@ -1,0 +1,3 @@
+---
+  - include: setup-sonarr.yml
+    run_once: true

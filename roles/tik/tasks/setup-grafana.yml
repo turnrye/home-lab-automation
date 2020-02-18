@@ -1,0 +1,25 @@
+---  
+  - name: Create temporary file for pv
+    tempfile:
+      state: file
+      suffix: temp
+    register: tempfile_1
+  - template:
+      src: grafana-pv.j2
+      dest: "{{ tempfile_1.path }}"
+  - name: Setup pv
+    shell: |
+      . ./.profile; kubectl apply -f "{{ tempfile_1.path }}"
+  - name: Create temporary file for pv
+    tempfile:
+      state: file
+      suffix: temp
+    register: tempfile_2
+  - template:
+      src: grafana-helm-config.j2
+      dest: "{{ tempfile_2.path }}"
+  - name: Add repo
+    shell: |
+      . ./.profile; helm repo add bitnami https://charts.bitnami.com/bitnami
+  - name: Setup kube-plex
+    shell: ". ./.profile; helm upgrade --install grafana bitnami/grafana -f {{ tempfile_2.path }}"

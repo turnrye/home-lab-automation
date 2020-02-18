@@ -1,0 +1,3 @@
+---
+  - include: setup-nextcloud.yml
+    run_once: true

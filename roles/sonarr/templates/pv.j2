@@ -1,28 +1,32 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: home-assistant-pv
+  name: sonarr-3-pv
 spec:
   capacity:
-    storage: 5Gi
+    storage: 1Ti
   accessModes:
     - ReadWriteOnce
-  nfs:
-    server: {{ nfs_server_host }}
-    path: /mnt/beta/k8s/home-assistant
+  iscsi:
+    targetPortal: 10.0.80.251:3260
+    portals: ['10.0.80.251:3260']
+    iqn: iqn.2005-10.org.freenas.ctl:iscsi-sonarr
+    lun: 0
+    fsType: ext4
+    readOnly: true
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: home-assistant-pvc
+  name: sonarr-3-pvc
 spec:
   # It's necessary to specify "" as the storageClassName
   # so that the default storage class won't be used, see
   # https://kubernetes.io/docs/concepts/storage/persistent-volumes/#class-1
   storageClassName: ""
-  volumeName: home-assistant-pv
+  volumeName: sonarr-3-pv
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 5Gi
+      storage: 1Ti

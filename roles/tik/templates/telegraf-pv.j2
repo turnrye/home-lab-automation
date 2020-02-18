@@ -1,28 +1,28 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: home-assistant-pv
+  name: telegraf-pv
 spec:
   capacity:
-    storage: 5Gi
+    storage: 1Ti
   accessModes:
     - ReadWriteOnce
   nfs:
     server: {{ nfs_server_host }}
-    path: /mnt/beta/k8s/home-assistant
+    path: /mnt/beta/k8s/telegraf
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: home-assistant-pvc
+  name: telegraf-pvc
 spec:
   # It's necessary to specify "" as the storageClassName
   # so that the default storage class won't be used, see
   # https://kubernetes.io/docs/concepts/storage/persistent-volumes/#class-1
   storageClassName: ""
-  volumeName: home-assistant-pv
+  volumeName: telegraf-pv
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 5Gi
+      storage: 1Ti

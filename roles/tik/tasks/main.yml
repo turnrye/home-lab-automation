@@ -1,0 +1,7 @@
+---
+  - include: setup-influxdb.yml
+    run_once: true
+  - include: setup-grafana.yml
+    run_once: true
+  # - include: setup-telegraf.yml
+  #   run_once: true

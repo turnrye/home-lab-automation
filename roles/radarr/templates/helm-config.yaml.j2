@@ -1,0 +1,22 @@
+image:
+  tag: latest
+  pullPolicy: Always
+persistence:
+  config:
+    enabled: true
+    existingClaim: radarr-3-pvc
+  downloads:
+    enabled: true
+    existingClaim: nzbget-downloads-pvc
+  movies:
+    enabled: true
+    existingClaim: plex-pvc
+ingress:
+  enabled: true
+  hosts: 
+    - radarr.turnrye.com
+  annotations: 
+    kubernetes.io/ingress.class: nginx
+timezone: {{ timezone }}
+puid: 0
+pgid: 0

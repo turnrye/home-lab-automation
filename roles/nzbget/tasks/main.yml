@@ -1,0 +1,3 @@
+---
+  - include: setup-nzbget.yml
+    run_once: true

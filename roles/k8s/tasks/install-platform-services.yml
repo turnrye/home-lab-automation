@@ -2,7 +2,7 @@
   - name: Setup metallb
     shell: ./.profile; kubectl apply -f https://raw.githubusercontent.com/google/metallb/v0.8.3/manifests/metallb.yaml
   - name: Setup NFS client provisioner
-    shell: . ~/.bashrc && helm upgrade --install nfs stable/nfs-client-provisioner --set nfs.server={{ nfs_server_host }} --set nfs.path=/mnt/media/k8s --set storageClass.defaultClass=true
+    shell: . ~/.bashrc && helm upgrade --install nfs stable/nfs-client-provisioner --set nfs.server={{ nfs_server_host }} --set nfs.path=/mnt/beta/k8s --set storageClass.defaultClass=true
   - name: Create temporary file for metallb
     tempfile:
       state: file
@@ -14,18 +14,24 @@
   - name: Setup metallb
     shell: |
       . ./.profile; kubectl apply -f "{{ tempfile_1.path }}"
+  - name: Create cert-manager namespace
+    shell: |
+      . ./.profile; kubectl create namespace ingress-nginx
   - name: Setup nginx ingress
     shell: |
-      . ./.profile; helm install nginx stable/nginx-ingress
+      . ./.profile; helm install nginx stable/nginx-ingress --namespace ingress-nginx
   - name: Setup jetstack
     shell: |
       . ./.profile; kubectl apply --validate=false -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.13/deploy/manifests/00-crds.yaml
   - name: Setup jetstack repo
     shell: |
       . ./.profile; helm repo add jetstack https://charts.jetstack.io
+  - name: Create cert-manager namespace
+    shell: |
+      . ./.profile; kubectl create namespace cert-manager
   - name: Setup jetstack
     shell: |
-      . ./.profile; helm install cert-manager jetstack/cert-manager --set=ingressShim.defaultIssuerKind=ClusterIssuer --set=ingressShim.defaultIssuerName=letsencrypt-prod
+      . ./.profile; helm install cert-manager jetstack/cert-manager --namespace cert-manager --set=ingressShim.defaultIssuerKind=ClusterIssuer --set=ingressShim.defaultIssuerName=letsencrypt-prod
 
   - name: Create temporary file for acme-issuer
     tempfile:
@@ -35,8 +41,9 @@
   - template:
       src: acme-issuer.j2
       dest: "{{ tempfile_2.path }}"
-  # - name: Setup acme-issuer
-  #   shell: |
-  #     . ./.profile; kubectl apply -f "{{ tempfile_2.path }}"
-  # This is failing with:
-  # Internal error occurred: failed calling webhook \"webhook.cert-manager.io\": Post https://cert-manager-webhook.default.svc:443/mutate?timeout=30s: dial tcp 10.107.6.110:443: connect: connection refused
+  - pause:
+      minutes: 3
+  - name: Setup acme-issuer
+    shell: |
+      . ./.profile; kubectl apply -f "{{ tempfile_2.path }}"
+      

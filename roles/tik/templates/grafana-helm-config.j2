@@ -1,0 +1,13 @@
+persistence:
+  enabled: true
+  existingClaim: influxdb-pvc
+  storageClass: 
+admin:
+  user: {{ grafana_user }}
+  password: "{{ grafana_password }}"
+ingress:
+  enabled: true
+  hosts: 
+    - name: grafana.turnrye.com
+  annotations: 
+    kubernetes.io/ingress.class: nginx

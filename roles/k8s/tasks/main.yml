@@ -1,7 +1,7 @@
 ---
   - { include: install-docker.yml, become: yes }
   - { include: install-k8s.yml, become: yes }
-  - include: setup-helm.yml
+  # - include: setup-helm.yml
   - name: Reset k8s
     shell: |
       kubeadm reset -f

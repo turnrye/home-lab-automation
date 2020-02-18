@@ -1,0 +1,37 @@
+image:
+  tag: latest
+  pullPolicy: Always
+persistence:
+  enabled: true
+  existingClaim: nextcloud-pvc
+ingress:
+  enabled: true
+  certManager: true
+  hosts: 
+    - nextcloud.turnrye.com
+  annotations: 
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/proxy-body-size: 10G
+    certmanager.k8s.io/issuer: letsencrypt-prod
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  tls:
+    - hosts:
+        - nextcloud.turnrye.com
+      secretName: nextcloud-tls
+nextcloud:
+  host: nextcloud.turnrye.com
+mariadb:
+  enabled: false
+externalDatabase:
+  enabled: true
+  type: mysql
+  host: mariadb
+  database: nextcloud
+  user: nextcloud
+  password: {{ nextcloud_db_pw }}
+internalDatabase:
+  enabled: false
+livenessProbe:
+  enabled: false
+readinessProbe:
+  enabled: false

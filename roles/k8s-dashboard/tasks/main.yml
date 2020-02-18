@@ -1,0 +1,3 @@
+---
+  - include: setup-k8s-dashboard.yml
+    run_once: true

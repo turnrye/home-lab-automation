@@ -1,11 +1,21 @@
+image:
+  tag: latest
+  pullPolicy: Always
 persistence:
   enabled: true
   existingClaim: home-assistant-pvc
 ingress:
   enabled: true
+  certManager: true
   hosts: 
     - home.turnrye.com
   annotations: 
     kubernetes.io/ingress.class: nginx
+    certmanager.k8s.io/issuer: letsencrypt-prod
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  tls:
+    - hosts:
+        - home.turnrye.com
+      secretName: home-assistant-tls
 extraEnv:
   TZ: {{ timezone }}

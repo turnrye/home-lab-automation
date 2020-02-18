@@ -9,8 +9,11 @@
     # - k8s-dashboard
     # - nzbget
     # - sonarr
-    - mariadb
+    # - radarr
+    # - lidarr
+    # - mariadb
     - nextcloud
+    # - tik
 
     # - funkwhale # This is broken
     # - prometheus # This is broken

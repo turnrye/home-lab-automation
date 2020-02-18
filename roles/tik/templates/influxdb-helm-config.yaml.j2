@@ -1,0 +1,19 @@
+persistence:
+  enabled: true
+  existingClaim: influxdb-pvc
+database: database
+adminUser:
+  name: turnrye
+  pwd: {{ influxdb_admin_pw }}
+user:
+  name: user
+  pwd: {{ influxdb_user_pw }}
+readUser:
+  name: readUser
+  pwd: {{ influxdb_read_user_pw }}
+ingress:
+  enabled: true
+  hosts: 
+    - name: influxdb.turnrye.com
+  annotations: 
+    kubernetes.io/ingress.class: nginx

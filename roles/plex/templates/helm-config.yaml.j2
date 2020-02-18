@@ -1,0 +1,23 @@
+image:
+  tag: latest
+  pullPolicy: Always
+claimToken: {{ vault_plex_claim_token }} 
+persistence:
+  data:
+    claimName: plex-pvc
+  config:
+    claimName: plex-config-4-pvc
+  transcode:
+    claimName: plex-transcode-pvc
+    enabled: true
+timezone: {{ timezone }}
+ingress:
+  enabled: true
+  hosts: 
+    - plex.turnrye.com
+  annotations: 
+    kubernetes.io/ingress.class: nginx
+service:
+  type: LoadBalancer
+kubePlex:
+  enabled: false

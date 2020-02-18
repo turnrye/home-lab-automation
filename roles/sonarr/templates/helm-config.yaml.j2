@@ -1,0 +1,19 @@
+persistence:
+  config:
+    enabled: true
+    existingClaim: sonarr-3-pvc
+  downloads:
+    enabled: true
+    existingClaim: nzbget-downloads-pvc
+  tv:
+    enabled: true
+    existingClaim: plex-pvc
+ingress:
+  enabled: true
+  hosts: 
+    - sonarr.turnrye.com
+  annotations: 
+    kubernetes.io/ingress.class: nginx
+timezone: {{ timezone }}
+puid: 0
+pgid: 0

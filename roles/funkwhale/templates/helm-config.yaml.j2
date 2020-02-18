@@ -1,0 +1,15 @@
+ingress:
+  enabled: true
+  host: prometheus.turnrye.com
+  annotations: 
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/proxy-body-size: 500m
+persistence:
+  enabled: true
+  existingClaim: funkwhale-config-pvc
+api:
+  extraVolumes:
+    - name: funkwhale-music
+      persistentVolumeClaim:
+        claimName: funkwhale-music-pvc
+djangoSecret: {{ vault_django_funkwhale_secret }}
