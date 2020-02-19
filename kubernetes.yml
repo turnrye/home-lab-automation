@@ -12,8 +12,9 @@
     # - radarr
     # - lidarr
     # - mariadb
-    - nextcloud
-    # - tik
+    # - nextcloud
+    # - gitlab
+    - tik
 
     # - funkwhale # This is broken
     # - prometheus # This is broken
