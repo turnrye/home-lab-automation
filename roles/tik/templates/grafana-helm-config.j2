@@ -11,3 +11,9 @@ ingress:
     - name: grafana.turnrye.com
   annotations: 
     kubernetes.io/ingress.class: nginx
+    certmanager.k8s.io/issuer: letsencrypt-prod
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  tls:
+    - hosts:
+        - grafana.turnrye.com
+      secretName: grafana-tls
