@@ -1,12 +1,30 @@
 alertmanager:
   persistentVolume:
     existingClaim: prometheus-alertmanager-pvc
+  ingress:
+    enabled: true
+    hosts: 
+      - alertmanager.turnrye.com
+    annotations: 
+      kubernetes.io/ingress.class: nginx
+      certmanager.k8s.io/issuer: letsencrypt-prod
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    tls:
+      - hosts:
+          - alertmanager.turnrye.com
+        secretName: alertmanager-tls
 server:
   persistentVolume:
-    existingClaim: prometheus-server-pvc
+    existingClaim: prometheus-server-2-pvc
   ingress:
     enabled: true
     hosts: 
       - prometheus.turnrye.com
     annotations: 
       kubernetes.io/ingress.class: nginx
+      certmanager.k8s.io/issuer: letsencrypt-prod
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    tls:
+      - hosts:
+          - prometheus.turnrye.com
+        secretName: prometheus-tls

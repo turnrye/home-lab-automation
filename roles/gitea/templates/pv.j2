@@ -1,0 +1,45 @@
+  apiVersion: v1
+  kind: PersistentVolume
+  metadata:
+    name: gitea-pv
+  spec:
+    capacity:
+      storage: 512Gi
+    accessModes:
+      - ReadWriteOnce
+    iscsi:
+      targetPortal: 10.0.80.251:3260
+      portals: ['10.0.80.251:3260']
+      iqn: iqn.2005-10.org.freenas.ctl:iscsi-gitea
+      lun: 0
+      fsType: ext4
+      readOnly: true
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gitea-pvc
+spec:
+  # It's necessary to specify "" as the storageClassName
+  # so that the default storage class won't be used, see
+  # https://kubernetes.io/docs/concepts/storage/persistent-volumes/#class-1
+  storageClassName: ""
+  volumeName: gitea-pv
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 512Gi
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: gitea-externaldb
+type: Opaque
+stringData:
+  dbUser: "gitea"
+  dbPassword: "f132afsdf23asdf"
+  db-password: "f132afsdf23asdf"
+  dbHost: "mariadb"
+  dbPort: "5432"
+  dbDatabase: "gitea"

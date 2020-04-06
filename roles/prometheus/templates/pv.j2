@@ -30,28 +30,32 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: prometheus-server-pv
+  name: prometheus-server-2-pv
 spec:
   capacity:
-    storage: 8Gi
+    storage: 100Gi
   accessModes:
     - ReadWriteOnce
-  nfs:
-    server: {{ nfs_server_host }}
-    path: /mnt/beta/k8s/prometheus/server
+  iscsi:
+    targetPortal: 10.0.80.251:3260
+    portals: ['10.0.80.251:3260']
+    iqn: iqn.2005-10.org.freenas.ctl:iscsi-prometheus
+    lun: 0
+    fsType: ext4
+    readOnly: true
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: prometheus-server-pvc
+  name: prometheus-server-2-pvc
 spec:
   # It's necessary to specify "" as the storageClassName
   # so that the default storage class won't be used, see
   # https://kubernetes.io/docs/concepts/storage/persistent-volumes/#class-1
   storageClassName: ""
-  volumeName: prometheus-server-pv
+  volumeName: prometheus-server-2-pv
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 8Gi
+      storage: 100Gi

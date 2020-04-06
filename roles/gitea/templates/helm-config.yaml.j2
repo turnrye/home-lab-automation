@@ -1,0 +1,47 @@
+persistence:
+  enabled: true
+  existingGiteaClaim: gitea-pvc
+ingress:
+  enabled: true
+  hostname: gitea.turnrye.com
+  annotations: 
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    certmanager.k8s.io/issuer: letsencrypt-prod
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  tls:
+    - hosts:
+        - gitea.turnrye.com
+      secretName: gitea-tls
+
+
+## This chart defaults to using an ingress for http, but change to LoadBalancer if using you cluster supports it
+service:
+
+  ## This can stay as ClusterIP as (by default) we use ingress
+  http:
+    serviceType: ClusterIP
+    port: 3000
+    ## Make the external port available
+    # externalPort: 8280
+    # externalHost: gitea.turnrye.com
+
+  ## SSH is commonly on port 22.. however.. you most likely already have port 22 being used by your node.
+  ## so we use port 8022.
+  ssh:
+    serviceType: LoadBalancer
+    port: 22
+    #nodePort: 30222
+    ## If serving on a different external port used for determining the ssh url in the gui
+    externalPort: 8022
+    externalHost: gitea.turnrye.com
+mariadb:
+  enabled: false
+externalDB:
+  dbUser: "gitea"
+  dbPassword: "f132afsdf23asdf"
+  dbHost: "mariadb"
+  dbPort: "5432"
+  dbDatabase: "gitea"

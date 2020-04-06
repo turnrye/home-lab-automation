@@ -6,15 +6,16 @@
   roles:
     # - home-assistant
     # - plex
+    # - gitea
     # - k8s-dashboard
     # - nzbget
-    # - sonarr
+    - sonarr
     # - radarr
     # - lidarr
     # - mariadb
     # - nextcloud
-    # - gitlab
-    - tik
+    # - tik
+    # - prometheus
 
     # - funkwhale # This is broken
     # - prometheus # This is broken
